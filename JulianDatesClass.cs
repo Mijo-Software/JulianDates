@@ -22,7 +22,7 @@ class JulianDatesClass
   private const int
     intSecondsOfDay = 86400;
 
-	public static double CalcJulianDate() => DateTime.Now.ToOADate() + doubleJulianDateCoefficient;
+	public static double CalcJulianDate() => DateTime.Now.ToUniversalTime().ToOADate() + doubleJulianDateCoefficient;
 
 	public static double CalcJulianDate(DateTime date) => date.ToOADate() + doubleJulianDateCoefficient;
 
