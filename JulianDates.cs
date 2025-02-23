@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace JulianAndHisDates
+﻿namespace Julian_and_his_dates
 {
 	/// <summary>
 	/// JulianDates
@@ -268,11 +266,9 @@ namespace JulianAndHisDates
 		/// <returns>Chronological Julian Date</returns>
 		public static double CalculateChronologicalJulianDate()
 		{
-			TimeZone zone = TimeZone.CurrentTimeZone;
-			DaylightTime time = zone.GetDaylightChanges(year: DateTime.Today.Year);
-			//System.Windows.Forms.MessageBox.Show((time.Delta.Hours * (24 / 100)).ToString());
-			//double a = time.Delta.Hours / 24.0;
-			return CalculateJulianDate() + 0.5 + (time.Delta.Hours / 24.0);
+			TimeZoneInfo zone = TimeZoneInfo.Local;
+			TimeSpan time = zone.GetAdjustmentRules().FirstOrDefault()?.DaylightDelta ?? TimeSpan.Zero;
+			return CalculateJulianDate() + 0.5 + (time.TotalHours / 24.0);
 		}
 
 		/// <summary>
@@ -282,9 +278,9 @@ namespace JulianAndHisDates
 		/// <returns>Chronological Julian Date</returns>
 		public static double CalculateChronologicalJulianDate(DateTime date)
 		{
-			TimeZone zone = TimeZone.CurrentTimeZone;
-			DaylightTime time = zone.GetDaylightChanges(year: DateTime.Today.Year);
-			return CalculateJulianDate(date: date) + 0.5 + (time.Delta.Hours / 24.0);
+			TimeZoneInfo zone = TimeZoneInfo.Local;
+			TimeSpan time = zone.GetAdjustmentRules().FirstOrDefault()?.DaylightDelta ?? TimeSpan.Zero;
+			return CalculateJulianDate(date: date) + 0.5 + (time.TotalHours / 24.0);
 		}
 
 		/// <summary>
@@ -294,9 +290,9 @@ namespace JulianAndHisDates
 		/// <returns>Chronological Julian Date</returns>
 		public static double CalculateChronologicalJulianDate(double julianDate)
 		{
-			TimeZone zone = TimeZone.CurrentTimeZone;
-			DaylightTime time = zone.GetDaylightChanges(year: DateTime.Today.Year);
-			return julianDate + 0.5 + (time.Delta.Hours / 24.0);
+			TimeZoneInfo zone = TimeZoneInfo.Local;
+			TimeSpan time = zone.GetAdjustmentRules().FirstOrDefault()?.DaylightDelta ?? TimeSpan.Zero;
+			return julianDate + 0.5 + (time.TotalHours / 24.0);
 		}
 
 		/// <summary>
@@ -305,11 +301,9 @@ namespace JulianAndHisDates
 		/// <returns>Chronological Modified Julian Date</returns>
 		public static double CalculateChronologicalModifiedJulianDate()
 		{
-			TimeZone zone = TimeZone.CurrentTimeZone;
-			DaylightTime time = zone.GetDaylightChanges(year: DateTime.Today.Year);
-			//System.Windows.Forms.MessageBox.Show((time.Delta.Hours * (24 / 100)).ToString());
-			//double a = time.Delta.Hours / 24.0;
-			return CalculateJulianDate() - doubleModifiedJulianDateCoefficient + 0.5 + (time.Delta.Hours / 24.0);
+			TimeZoneInfo zone = TimeZoneInfo.Local;
+			TimeSpan time = zone.GetAdjustmentRules().FirstOrDefault()?.DaylightDelta ?? TimeSpan.Zero;
+			return CalculateJulianDate() - doubleModifiedJulianDateCoefficient + 0.5 + (time.TotalHours / 24.0);
 		}
 
 		/// <summary>
@@ -319,11 +313,11 @@ namespace JulianAndHisDates
 		/// <returns>Chronological Modified Julian Date</returns>
 		public static double CalculateChronologicalModifiedJulianDate(DateTime date)
 		{
-			TimeZone zone = TimeZone.CurrentTimeZone;
-			DaylightTime time = zone.GetDaylightChanges(year: DateTime.Today.Year);
+			TimeZoneInfo zone = TimeZoneInfo.Local;
+			TimeSpan time = zone.GetAdjustmentRules().FirstOrDefault()?.DaylightDelta ?? TimeSpan.Zero;
 			return CalculateJulianDate(date: date) -
-				doubleModifiedJulianDateCoefficient +
-				0.5 + (time.Delta.Hours / 24.0);
+			doubleModifiedJulianDateCoefficient +
+			0.5 + (time.TotalHours / 24.0);
 		}
 
 		/// <summary>
@@ -333,9 +327,9 @@ namespace JulianAndHisDates
 		/// <returns>Chronological Modified Julian Date</returns>
 		public static double CalculateChronologicalModifiedJulianDate(double julianDate)
 		{
-			TimeZone zone = TimeZone.CurrentTimeZone;
-			DaylightTime time = zone.GetDaylightChanges(year: DateTime.Today.Year);
-			return julianDate - doubleModifiedJulianDateCoefficient + 0.5 + (time.Delta.Hours / 24.0);
+			TimeZoneInfo zone = TimeZoneInfo.Local;
+			TimeSpan time = zone.GetAdjustmentRules().FirstOrDefault()?.DaylightDelta ?? TimeSpan.Zero;
+			return julianDate - doubleModifiedJulianDateCoefficient + 0.5 + (time.TotalHours / 24.0);
 		}
 
 		/// <summary>
@@ -429,84 +423,33 @@ namespace JulianAndHisDates
 		/// <returns>civil calendar</returns>
 		public static DateTime ConvertJulianDateToCivilCalendar(double julianDate)
 		{
-			double j = julianDate;
-			double intgr = Math.Floor(d: j);
-			double frac = j - intgr;
-			const double gregjd = 2299160.5;
-			double j1;
-			if (j >= gregjd)
+			double j = julianDate + 0.5;
+			int Z = (int)j;
+			double F = j - Z;
+			int A = Z;
+			if (Z >= 2299161)
 			{
-				double tmp = Math.Floor(d: (intgr - 1867216.0 - 0.25) / 36524.25);
-				j1 = intgr + 1 + tmp - Math.Floor(d: 0.25 * tmp);
+				int alpha = (int)((Z - 1867216.25) / 36524.25);
+				A += 1 + alpha - (int)(alpha / 4.0);
 			}
-			else
-			{
-				j1 = intgr;
-			}
-			double df = frac + 0.5;
-			if (df >= 1.0)
-			{
-				df--;
-				++j1;
-			}
-			double j2 = j1 + 1524.0;
-			double j3 = Math.Floor(d: 6680.0 + ((j2 - 2439870.0 - 122.1) / 365.25));
-			double j4 = Math.Floor(d: j3 * 365.25);
-			double j5 = Math.Floor(d: (j2 - j4) / 30.6001);
-			double d = Math.Floor(d: j2 - j4 - Math.Floor(d: j5 * 30.6001));
-			double m = Math.Floor(d: j5 - 1.0);
-			if (m > 12)
-			{
-				m -= 12;
-			}
-			double y = Math.Floor(d: j3 - 4715.0);
-			if (m > 2)
-			{
-				--y;
-			}
-			if (y <= 0)
-			{
-				--y;
-			}
-			double d1 = df * 24.0;
-			double hr = Math.Floor(d: d1);
-			double mn = Math.Floor(d: ((df * 24.0) - hr) * 60.0);
-			double f = ((((df * 24.0) - hr) * 60.0) - mn) * 60.0;
-			double sc = Math.Floor(d: f);
-			f -= sc;
-			if (f > 0.5)
-			{
-				++sc;
-			}
-			if (sc == 60)
-			{
-				sc = 0;
-				++mn;
-			}
-			if (mn == 60)
-			{
-				mn = 0;
-				++hr;
-			}
-			if (hr == 24)
-			{
-				hr = 0;
-				++d;
-			}
-			/*if (y < 0)
-			{
-			}
-			else
-			{
-			}*/
-			return new DateTime(
-				year: (int)y,
-				month: (int)m,
-				day: (int)d,
-				hour: (int)hr,
-				minute: (int)mn,
-				second: (int)sc);
+			int B = A + 1524;
+			int C = (int)((B - 122.1) / 365.25);
+			int D = (int)(365.25 * C);
+			int E = (int)((B - D) / 30.6001);
+
+			int day = B - D - (int)(30.6001 * E);
+			int month = (E < 14) ? E - 1 : E - 13;
+			int year = (month > 2) ? C - 4716 : C - 4715;
+
+			double dayFraction = F * 24.0;
+			int hour = (int)dayFraction;
+			double minuteFraction = (dayFraction - hour) * 60.0;
+			int minute = (int)minuteFraction;
+			int second = (int)((minuteFraction - minute) * 60.0);
+
+			return new DateTime(year, month, day, hour, minute, second);
 		}
+
 
 		/// <summary>
 		/// Convert the Julian Date to the Modified Julian Date
@@ -576,7 +519,7 @@ namespace JulianAndHisDates
 		/// Convert the Julian Date to the Millennium Julian Date
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
-		/// <returns></returns>
+		/// <returns>Millennium Julian Date</returns>
 		public static double ConvertJulianDateToMillenniumJulianDate(double julianDate) => julianDate -
 			doubleMillenniumJulianDateCoefficient;
 
