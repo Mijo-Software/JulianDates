@@ -1,269 +1,293 @@
 ﻿namespace Julian_and_his_dates
 {
 	/// <summary>
-	/// JulianDates
+	/// Provides static methods and constants for converting and calculating various astronomical and civil date formats
+	/// based on the Julian Date system. This class includes methods for converting between Julian Date, Modified Julian Date,
+	/// Reduced Julian Date, Truncated Julian Date, Dublin Julian Date, CNES Julian Date, CCSDS Julian Date, LOP Julian Date,
+	/// Millennium Julian Date, Lilian Date, Rata Die, Mars Sol Date, Unix Time, and civil calendar dates.
 	/// </summary>
 	public static class JulianDates
 	{
 		#region consonants
 
 		/// <summary>
-		/// Julian Date coefficient
+		/// Offset to convert OLE Automation Date (OADate) to Julian Date.
 		/// </summary>
-		private const double doubleJulianDateCoefficient = 2415018.5;
+		private const double DoubleJulianDateCoefficient = 2415018.5;
 
 		/// <summary>
-		/// Modified Julian Date coefficient
+		/// Offset to convert Julian Date to Modified Julian Date (MJD).
 		/// </summary>
-		private const double doubleModifiedJulianDateCoefficient = 2400000.5;
+		private const double DoubleModifiedJulianDateCoefficient = 2400000.5;
 
 		/// <summary>
-		/// Reduced Julian Date coefficient
+		/// Offset to convert Julian Date to Reduced Julian Date (RJD).
 		/// </summary>
-		private const double doubleReducedJulianDateCoefficient = 2400000;
+		private const double DoubleReducedJulianDateCoefficient = 2400000;
 
 		/// <summary>
-		/// Truncated Julian Date coefficient
+		/// Offset to convert Julian Date to Truncated Julian Date (TJD).
 		/// </summary>
-		private const double doubleTruncatedJulianDateCoefficient = 2440000.5;
+		private const double DoubleTruncatedJulianDateCoefficient = 2440000.5;
 
 		/// <summary>
-		/// Dublin Julian Date coefficient
+		/// Offset to convert Julian Date to Dublin Julian Date (DJD).
 		/// </summary>
-		private const double doubleDublinJulianDateCoefficient = 2415020;
+		private const double DoubleDublinJulianDateCoefficient = 2415020;
 
 		/// <summary>
-		/// CCNES Julian Date coefficient
+		/// Offset to convert Julian Date to CNES Julian Date.
 		/// </summary>
-		private const double doubleCnesJulianDateCoefficient = 2433282.5;
+		private const double DoubleCnesJulianDateCoefficient = 2433282.5;
 
 		/// <summary>
-		/// CCSDS Julian Date coefficient
+		/// Offset to convert Julian Date to CCSDS Julian Date.
 		/// </summary>
-		private const double doubleCcsdsJulianDateCoefficient = 2436204.5;
+		private const double DoubleCcsdsJulianDateCoefficient = 2436204.5;
 
 		/// <summary>
-		/// LOP Julian Date coefficient
+		/// Offset to convert Julian Date to LOP Julian Date.
 		/// </summary>
-		private const double doubleLopJulianDateCoefficient = 2448622.5;
+		private const double DoubleLopJulianDateCoefficient = 2448622.5;
 
 		/// <summary>
-		/// Millennium Julian Date coefficient
+		/// Offset to convert Julian Date to Millennium Julian Date.
 		/// </summary>
-		private const double doubleMillenniumJulianDateCoefficient = 2451544.5;
+		private const double DoubleMillenniumJulianDateCoefficient = 2451544.5;
 
 		/// <summary>
-		/// Lilian Date coefficient
+		/// Offset to convert Julian Date to Lilian Date.
 		/// </summary>
-		private const double doubleLilianDateCoefficient = 2299159.5;
+		private const double DoubleLilianDateCoefficient = 2299159.5;
 
 		/// <summary>
-		/// Rata Die coefficient
+		/// Offset to convert Julian Date to Rata Die.
 		/// </summary>
-		private const double doubleRataDieCoefficient = 1721424.5;
+		private const double DoubleRataDieCoefficient = 1721424.5;
 
 		/// <summary>
-		/// Mars Sol Date coefficient
+		/// Offset to convert Julian Date to Mars Sol Date.
 		/// </summary>
-		private const double doubleMarsSolDateCoefficient = 2405522;
+		private const double DoubleMarsSolDateCoefficient = 2405522;
 
 		/// <summary>
-		/// ratio of the rotation of Earth and Mars
+		/// Ratio of the rotation period of Earth to Mars (used for Mars Sol Date calculation).
 		/// </summary>
-		private const double doubleRatioRotationAxisEarthMars = 1.02749;
+		private const double DoubleRatioRotationAxisEarthMars = 1.02749;
 
 		/// <summary>
-		/// Unix Time coefficient
+		/// Offset to convert Julian Date to Unix Time (seconds since 1970-01-01).
 		/// </summary>
-		private const double doubleUnixtimeCoefficient = 2440587.5;
+		private const double DoubleUnixTimeCoefficient = 2440587.5;
 
 		/// <summary>
-		/// seconds in a day
+		/// Number of seconds in a day (used for time conversions).
 		/// </summary>
-		private const int secondsOfDay = 86400;
+		private const int SecondsOfDay = 86400;
 
 		#endregion
 
 		#region JD Calculators
 
 		/// <summary>
-		/// Calculate the Julian Date from the Universal time
+		/// Calculates the current Julian Date using the current system time in UTC.
+		/// The calculation is based on converting the current UTC time to an OLE Automation Date (OADate)
+		/// and then adding the Julian Date coefficient to obtain the astronomical Julian Date.
 		/// </summary>
-		/// <returns>Julian Date</returns>
-		public static double CalculateJulianDate() => DateTime.Now.ToUniversalTime().ToOADate() + doubleJulianDateCoefficient;
+		/// <returns>Julian Date for the current UTC time</returns>
+		public static double CalculateJulianDate() => DateTime.Now.ToUniversalTime().ToOADate() + DoubleJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Julian Date from the date
+		/// Calculates the Julian Date for a given date and time.
+		/// The calculation converts the provided DateTime to an OLE Automation Date (OADate)
+		/// and adds the Julian Date coefficient to obtain the astronomical Julian Date.
 		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>Julian Date</returns>
-		public static double CalculateJulianDate(DateTime date) => date.ToOADate() + doubleJulianDateCoefficient;
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Julian Date corresponding to the specified date and time</returns>
+		public static double CalculateJulianDate(DateTime date) => date.ToOADate() + DoubleJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Modified Julian Date
+		/// Calculates the current Modified Julian Date (MJD) using the current system time in UTC.
+		/// The result is obtained by subtracting the Modified Julian Date coefficient from the current Julian Date.
 		/// </summary>
-		/// <returns>Modified Julian Date</returns>
-		public static double CalculateModifiedJulianDate() => CalculateJulianDate() - doubleModifiedJulianDateCoefficient;
+		/// <returns>Modified Julian Date for the current UTC time</returns>
+		public static double CalculateModifiedJulianDate() => CalculateJulianDate() - DoubleModifiedJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Modified Julian Date from the date
+		/// Calculates the Modified Julian Date (MJD) for a given date and time.
+		/// The result is obtained by subtracting the Modified Julian Date coefficient from the Julian Date of the specified date.
 		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>Modified Julian Date</returns>
-		public static double CalculateModifiedJulianDate(DateTime date) => CalculateJulianDate(date: date) - doubleModifiedJulianDateCoefficient;
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Modified Julian Date corresponding to the specified date and time</returns>
+		public static double CalculateModifiedJulianDate(DateTime date) => CalculateJulianDate(date: date) - DoubleModifiedJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Modified Julian Date from the Julian Date
+		/// Calculates the Modified Julian Date (MJD) from a given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Modified Julian Date</returns>
-		public static double CalculateModifiedJulianDate(double julianDate) => julianDate - doubleModifiedJulianDateCoefficient;
+		public static double CalculateModifiedJulianDate(double julianDate) => julianDate - DoubleModifiedJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Reduced Julian Date
+		/// Calculates the current Reduced Julian Date (RJD) using the current system time in UTC.
+		/// The result is obtained by subtracting the Reduced Julian Date coefficient from the current Julian Date.
 		/// </summary>
+		/// <returns>Reduced Julian Date for the current UTC time</returns>
+		public static double CalculateReducedJulianDate() => CalculateJulianDate() - DoubleReducedJulianDateCoefficient;
+
+		/// <summary>
+		/// Calculates the Reduced Julian Date (RJD) for a given date and time.
+		/// The result is obtained by subtracting the Reduced Julian Date coefficient from the Julian Date of the specified date.
+		/// </summary>
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Reduced Julian Date corresponding to the specified date and time</returns>
+		public static double CalculateReducedJulianDate(DateTime date) => CalculateJulianDate(date: date) - DoubleReducedJulianDateCoefficient;
+
+		/// <summary>
+		/// Calculates the Reduced Julian Date (RJD) from a given Julian Date.
+		/// </summary>
+		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Reduced Julian Date</returns>
-		public static double CalculateReducedJulianDate() => CalculateJulianDate() - doubleReducedJulianDateCoefficient;
+		public static double CalculateReducedJulianDate(double julianDate) => julianDate - DoubleReducedJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Reduced Julian Date from the date
+		/// Calculates the current Truncated Julian Date (TJD) using the current system time in UTC.
+		/// The result is the floored value of the current Julian Date minus the Truncated Julian Date coefficient.
 		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>Reduced Julian Date</returns>
-		public static double CalculateReducedJulianDate(DateTime date) => CalculateJulianDate(date: date) - doubleReducedJulianDateCoefficient;
+		/// <returns>Truncated Julian Date for the current UTC time</returns>
+		public static double CalculateTruncatedJulianDate() => Math.Floor(d: CalculateJulianDate() - DoubleTruncatedJulianDateCoefficient);
 
 		/// <summary>
-		/// Calculate the Reduced Julian Date from the Julian Date
+		/// Calculates the Truncated Julian Date (TJD) for a given date and time.
+		/// The result is the floored value of the Julian Date of the specified date minus the Truncated Julian Date coefficient.
 		/// </summary>
-		/// <param name="julianDate">Julian Date</param>
-		/// <returns>Reduced Julian Date</returns>
-		public static double CalculateReducedJulianDate(double julianDate) => julianDate - doubleReducedJulianDateCoefficient;
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Truncated Julian Date corresponding to the specified date and time</returns>
+		public static double CalculateTruncatedJulianDate(DateTime date) => Math.Floor(d: CalculateJulianDate(date: date) - DoubleTruncatedJulianDateCoefficient);
 
 		/// <summary>
-		/// Calculate the Truncated Julian Date
-		/// </summary>
-		/// <returns>Truncated Julian Date</returns>
-		public static double CalculateTruncatedJulianDate() => Math.Floor(d: CalculateJulianDate() - doubleTruncatedJulianDateCoefficient);
-
-		/// <summary>
-		/// Calculate the Truncated Julian Date from the date
-		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>Truncated Julian Date</returns>
-		public static double CalculateTruncatedJulianDate(DateTime date) => Math.Floor(d: CalculateJulianDate(date: date) - doubleTruncatedJulianDateCoefficient);
-
-		/// <summary>
-		/// Calculate the Truncated Julian Date from the Julian Date
+		/// Calculates the Truncated Julian Date (TJD) from a given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Truncated Julian Date</returns>
-		public static double CalculateTruncatedJulianDate(double julianDate) => Math.Floor(d: julianDate - doubleTruncatedJulianDateCoefficient);
+		public static double CalculateTruncatedJulianDate(double julianDate) => Math.Floor(d: julianDate - DoubleTruncatedJulianDateCoefficient);
 
 		/// <summary>
-		/// Calculate the Dublin Julian Date
+		/// Calculates the current Dublin Julian Date (DJD) using the current system time in UTC.
+		/// The result is obtained by subtracting the Dublin Julian Date coefficient from the current Julian Date.
 		/// </summary>
+		/// <returns>Dublin Julian Date for the current UTC time</returns>
+		public static double CalculateDublinJulianDate() => CalculateJulianDate() - DoubleDublinJulianDateCoefficient;
+
+		/// <summary>
+		/// Calculates the Dublin Julian Date (DJD) for a given date and time.
+		/// The result is obtained by subtracting the Dublin Julian Date coefficient from the Julian Date of the specified date.
+		/// </summary>
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Dublin Julian Date corresponding to the specified date and time</returns>
+		public static double CalculateDublinJulianDate(DateTime date) => CalculateJulianDate(date: date) - DoubleDublinJulianDateCoefficient;
+
+		/// <summary>
+		/// Calculates the Dublin Julian Date (DJD) from a given Julian Date.
+		/// The result is obtained by subtracting the Dublin Julian Date coefficient from the specified Julian Date.
+		/// </summary>
+		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Dublin Julian Date</returns>
-		public static double CalculateDublinJulianDate() => CalculateJulianDate() - doubleDublinJulianDateCoefficient;
+		public static double CalculateDublinJulianDate(double julianDate) => julianDate - DoubleDublinJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Dublin Julian Date from the date
+		/// Calculates the current CNES Julian Date using the current system time in UTC.
+		/// The result is obtained by subtracting the CNES Julian Date coefficient from the current Julian Date.
 		/// </summary>
-		/// <param name="date"></param>
-		/// <returns>Dublin Julian Date</returns>
-		public static double CalculateDublinJulianDate(DateTime date) => CalculateJulianDate(date: date) - doubleDublinJulianDateCoefficient;
+		/// <returns>CNES Julian Date for the current UTC time</returns>
+		public static double CalculateCnesJulianDate() => CalculateJulianDate() - DoubleCnesJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Dublin Julian Date from the Julian Date
+		/// Calculates the CNES Julian Date for a given date and time.
+		/// The result is obtained by subtracting the CNES Julian Date coefficient from the Julian Date of the specified date.
 		/// </summary>
-		/// <param name="julianDate"></param>
-		/// <returns>Dublin Julian Date</returns>
-		public static double CalculateDublinJulianDate(double julianDate) => julianDate - doubleDublinJulianDateCoefficient;
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>CNES Julian Date corresponding to the specified date and time</returns>
+		public static double CalculateCnesJulianDate(DateTime date) => CalculateJulianDate(date: date) - DoubleCnesJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the CNES Julian Date
-		/// </summary>
-		/// <returns>CNES Julian Date</returns>
-		public static double CalculateCnesJulianDate() => CalculateJulianDate() - doubleCnesJulianDateCoefficient;
-
-		/// <summary>
-		/// Calculate the CNES Julian Date from the date
-		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>CNES Julian Date</returns>
-		public static double CalculateCnesJulianDate(DateTime date) => CalculateJulianDate(date: date) - doubleCnesJulianDateCoefficient;
-
-		/// <summary>
-		/// Calculate the CNES Julian Date from the Julian Date
+		/// Calculates the CNES Julian Date from a given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>CNES Julian Date</returns>
-		public static double CalculateCnesJulianDate(double julianDate) => julianDate - doubleCnesJulianDateCoefficient;
+		public static double CalculateCnesJulianDate(double julianDate) => julianDate - DoubleCnesJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the CCSDS Julian Date
+		/// Calculates the current CCSDS Julian Date using the current system time in UTC.
+		/// The result is obtained by subtracting the CCSDS Julian Date coefficient from the current Julian Date.
 		/// </summary>
-		/// <returns>CCSDS Julian Date</returns>
-		public static double CalculateCcsdsJulianDate() => CalculateJulianDate() - doubleCcsdsJulianDateCoefficient;
+		/// <returns>CCSDS Julian Date for the current UTC time</returns>
+		public static double CalculateCcsdsJulianDate() => CalculateJulianDate() - DoubleCcsdsJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the CCSDS Julian Date from the date
+		/// Calculates the CCSDS Julian Date for a given date and time.
+		/// The result is obtained by subtracting the CCSDS Julian Date coefficient from the Julian Date of the specified date.
 		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>CCSDS Julian Date</returns>
-		public static double CalculateCcsdsJulianDate(DateTime date) => CalculateJulianDate(date: date) - doubleCcsdsJulianDateCoefficient;
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>CCSDS Julian Date corresponding to the specified date and time</returns>
+		public static double CalculateCcsdsJulianDate(DateTime date) => CalculateJulianDate(date: date) - DoubleCcsdsJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the CCSDS Julian Date from the Julian Date
-		/// </summary>
-		/// <param name="julianDate">Julian Date</param>
-		/// <returns>CCSDS Julian Date</returns>
-		public static double CalculateCcsdsJulianDate(double julianDate) => julianDate - doubleCcsdsJulianDateCoefficient;
-
-		/// <summary>
-		/// Calculate the LOP Julian Date
-		/// </summary>
-		/// <returns>LOP Julian Date</returns>
-		public static double CalculateLopJulianDate() => CalculateJulianDate() - doubleLopJulianDateCoefficient;
-
-		/// <summary>
-		/// Calculate the LOP Julian Date from the date
-		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>LOP Julian Date</returns>
-		public static double CalculateLopJulianDate(DateTime date) => CalculateJulianDate(date: date) - doubleLopJulianDateCoefficient;
-
-		/// <summary>
-		/// Calculate the LOP Julian Date from the Julian Date
+		/// Calculates the CCSDS Julian Date from a given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
-		/// <returns></returns>
+		/// <returns>CCSDS Julian Date</returns>
+		public static double CalculateCcsdsJulianDate(double julianDate) => julianDate - DoubleCcsdsJulianDateCoefficient;
+
+		/// <summary>
+		/// Calculates the current LOP Julian Date using the current system time in UTC.
+		/// The result is obtained by subtracting the LOP Julian Date coefficient from the current Julian Date.
+		/// </summary>
+		/// <returns>LOP Julian Date for the current UTC time</returns>
+		public static double CalculateLopJulianDate() => CalculateJulianDate() - DoubleLopJulianDateCoefficient;
+
+		/// <summary>
+		/// Calculates the LOP Julian Date for a given date and time.
+		/// The result is obtained by subtracting the LOP Julian Date coefficient from the Julian Date of the specified date.
+		/// </summary>
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>LOP Julian Date corresponding to the specified date and time</returns>
+		public static double CalculateLopJulianDate(DateTime date) => CalculateJulianDate(date: date) - DoubleLopJulianDateCoefficient;
+
+		/// <summary>
+		/// Calculates the LOP Julian Date from a given Julian Date.
+		/// </summary>
+		/// <param name="julianDate">Julian Date</param>
 		/// <returns>LOP Julian Date</returns>
-		public static double CalculateLopJulianDate(double julianDate) => julianDate - doubleLopJulianDateCoefficient;
+		public static double CalculateLopJulianDate(double julianDate) => julianDate - DoubleLopJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Millennium Julian Date
+		/// Calculates the current Millennium Julian Date using the current system time in UTC.
+		/// The result is obtained by subtracting the Millennium Julian Date coefficient from the current Julian Date.
 		/// </summary>
-		/// <returns>Millennium Julian Date</returns>
-		public static double CalculateMillenniumJulianDate() => CalculateJulianDate() - doubleMillenniumJulianDateCoefficient;
+		/// <returns>Millennium Julian Date for the current UTC time</returns>
+		public static double CalculateMillenniumJulianDate() => CalculateJulianDate() - DoubleMillenniumJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Millennium Julian Date from the date
+		/// Calculates the Millennium Julian Date for a given date and time.
+		/// The result is obtained by subtracting the Millennium Julian Date coefficient from the Julian Date of the specified date.
 		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>Millennium Julian Date</returns>
-		public static double CalculateMillenniumJulianDate(DateTime date) => CalculateJulianDate(date: date) - doubleMillenniumJulianDateCoefficient;
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Millennium Julian Date corresponding to the specified date and time</returns>
+		public static double CalculateMillenniumJulianDate(DateTime date) => CalculateJulianDate(date: date) - DoubleMillenniumJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Millennium Julian Date from the Julian Date
+		/// Calculates the Millennium Julian Date from a given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Millennium Julian Date</returns>
-		public static double CalculateMillenniumJulianDate(double julianDate) => julianDate - doubleMillenniumJulianDateCoefficient;
+		public static double CalculateMillenniumJulianDate(double julianDate) => julianDate - DoubleMillenniumJulianDateCoefficient;
 
 		/// <summary>
-		/// Calculate the Chronological Julian Date
+		/// Calculates the current Chronological Julian Date using the current system time in the local time zone.
+		/// The result is the Julian Date plus 0.5 and the local daylight saving time offset (in days).
 		/// </summary>
-		/// <returns>Chronological Julian Date</returns>
+		/// <returns>Chronological Julian Date for the current local time</returns>
 		public static double CalculateChronologicalJulianDate()
 		{
 			TimeZoneInfo zone = TimeZoneInfo.Local;
@@ -272,10 +296,11 @@
 		}
 
 		/// <summary>
-		/// Calculate the Chronological Julian Date from the date
+		/// Calculates the Chronological Julian Date for a given date and time in the local time zone.
+		/// The result is the Julian Date of the specified date plus 0.5 and the local daylight saving time offset (in days).
 		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>Chronological Julian Date</returns>
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Chronological Julian Date corresponding to the specified date and time</returns>
 		public static double CalculateChronologicalJulianDate(DateTime date)
 		{
 			TimeZoneInfo zone = TimeZoneInfo.Local;
@@ -284,7 +309,8 @@
 		}
 
 		/// <summary>
-		/// Calculate the Chronological Julian Date from the Julian Date
+		/// Calculates the Chronological Julian Date from a given Julian Date in the local time zone.
+		/// The result is the specified Julian Date plus 0.5 and the local daylight saving time offset (in days).
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Chronological Julian Date</returns>
@@ -296,32 +322,35 @@
 		}
 
 		/// <summary>
-		/// Calculate the Chronological Modified Julian Date
+		/// Calculates the current Chronological Modified Julian Date using the current system time in the local time zone.
+		/// The result is the Modified Julian Date plus 0.5 and the local daylight saving time offset (in days).
 		/// </summary>
-		/// <returns>Chronological Modified Julian Date</returns>
+		/// <returns>Chronological Modified Julian Date for the current local time</returns>
 		public static double CalculateChronologicalModifiedJulianDate()
 		{
 			TimeZoneInfo zone = TimeZoneInfo.Local;
 			TimeSpan time = zone.GetAdjustmentRules().FirstOrDefault()?.DaylightDelta ?? TimeSpan.Zero;
-			return CalculateJulianDate() - doubleModifiedJulianDateCoefficient + 0.5 + (time.TotalHours / 24.0);
+			return CalculateJulianDate() - DoubleModifiedJulianDateCoefficient + 0.5 + (time.TotalHours / 24.0);
 		}
 
 		/// <summary>
-		/// Calculate the Chronological Modified Julian Date from the date
+		/// Calculates the Chronological Modified Julian Date for a given date and time in the local time zone.
+		/// The result is the Modified Julian Date of the specified date plus 0.5 and the local daylight saving time offset (in days).
 		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>Chronological Modified Julian Date</returns>
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Chronological Modified Julian Date corresponding to the specified date and time</returns>
 		public static double CalculateChronologicalModifiedJulianDate(DateTime date)
 		{
 			TimeZoneInfo zone = TimeZoneInfo.Local;
 			TimeSpan time = zone.GetAdjustmentRules().FirstOrDefault()?.DaylightDelta ?? TimeSpan.Zero;
 			return CalculateJulianDate(date: date) -
-			doubleModifiedJulianDateCoefficient +
-			0.5 + (time.TotalHours / 24.0);
+				DoubleModifiedJulianDateCoefficient +
+				0.5 + (time.TotalHours / 24.0);
 		}
 
 		/// <summary>
-		/// Calculate the Chronological Modified Julian Date from the Julian Date
+		/// Calculates the Chronological Modified Julian Date from a given Julian Date in the local time zone.
+		/// The result is the specified Julian Date minus the Modified Julian Date coefficient, plus 0.5 and the local daylight saving time offset (in days).
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Chronological Modified Julian Date</returns>
@@ -329,245 +358,272 @@
 		{
 			TimeZoneInfo zone = TimeZoneInfo.Local;
 			TimeSpan time = zone.GetAdjustmentRules().FirstOrDefault()?.DaylightDelta ?? TimeSpan.Zero;
-			return julianDate - doubleModifiedJulianDateCoefficient + 0.5 + (time.TotalHours / 24.0);
+			return julianDate - DoubleModifiedJulianDateCoefficient + 0.5 + (time.TotalHours / 24.0);
 		}
 
 		/// <summary>
-		/// Calculate the Lilian Date
+		/// Calculates the current Lilian Date using the current system time in UTC.
+		/// The result is the floored value of the current Julian Date minus the Lilian Date coefficient.
 		/// </summary>
-		/// <returns>Lilian Date</returns>
-		public static double CalculateLilianDate() => Math.Floor(d: CalculateJulianDate() - doubleLilianDateCoefficient);
+		/// <returns>Lilian Date for the current UTC time</returns>
+		public static double CalculateLilianDate() => Math.Floor(d: CalculateJulianDate() - DoubleLilianDateCoefficient);
 
 		/// <summary>
-		/// Calculate the Lilian Date from the date
+		/// Calculates the Lilian Date for a given date and time.
+		/// The result is the floored value of the Julian Date of the specified date minus the Lilian Date coefficient.
 		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>Lilian Date</returns>
-		public static double CalculateLilianDate(DateTime date) => Math.Floor(d: CalculateJulianDate(date: date) - doubleLilianDateCoefficient);
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Lilian Date corresponding to the specified date and time</returns>
+		public static double CalculateLilianDate(DateTime date) => Math.Floor(d: CalculateJulianDate(date: date) - DoubleLilianDateCoefficient);
 
 		/// <summary>
-		/// Calculate the Lilian Date from the Julian Date
+		/// Calculates the Lilian Date from a given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Lilian Date</returns>
-		public static double CalculateLilianDate(double julianDate) => Math.Floor(d: julianDate - doubleLilianDateCoefficient);
+		public static double CalculateLilianDate(double julianDate) => Math.Floor(d: julianDate - DoubleLilianDateCoefficient);
 
 		/// <summary>
-		/// Calculate the Rata Die
+		/// Calculates the current Rata Die using the current system time in UTC.
+		/// The result is the floored value of the current Julian Date minus the Rata Die coefficient.
 		/// </summary>
-		/// <returns>Rata Die</returns>
-		public static double CalculateRataDie() => Math.Floor(d: CalculateJulianDate() - doubleRataDieCoefficient);
+		/// <returns>Rata Die for the current UTC time</returns>
+		public static double CalculateRataDie() => Math.Floor(d: CalculateJulianDate() - DoubleRataDieCoefficient);
 
 		/// <summary>
-		/// Calculate the Rata Die from the date
+		/// Calculates the Rata Die for a given date and time.
+		/// The result is the floored value of the Julian Date of the specified date minus the Rata Die coefficient.
 		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>Rata Die</returns>
-		public static double CalculateRataDie(DateTime date) => Math.Floor(d: CalculateJulianDate(date: date) - doubleRataDieCoefficient);
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Rata Die corresponding to the specified date and time</returns>
+		public static double CalculateRataDie(DateTime date) => Math.Floor(d: CalculateJulianDate(date: date) - DoubleRataDieCoefficient);
 
 		/// <summary>
-		/// Calculate the Rata Die from the Julian Date
-		/// </summary>
-		/// <param name="julianDate">Julian Date</param>
-		/// <returns>Rata Die</returns>
-		public static double CalculateRataDie(double julianDate) => Math.Floor(d: julianDate - doubleRataDieCoefficient);
-
-		/// <summary>
-		/// Calculate the Mars Sol Date
-		/// </summary>
-		/// <returns>Mars Sol Date</returns>
-		public static double CalculateMarsSolDate() => (CalculateJulianDate() - doubleMarsSolDateCoefficient) / doubleRatioRotationAxisEarthMars;
-
-		/// <summary>
-		/// Calculate the Mars Sol Date from the date
-		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>Mars Sol Date</returns>
-		public static double CalculateMarsSolDate(DateTime date) => (CalculateJulianDate(date: date) - doubleMarsSolDateCoefficient) / doubleRatioRotationAxisEarthMars;
-
-		/// <summary>
-		/// Calculate the Mars Sol Date from the Julian Date
+		/// Calculates the Rata Die from a given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
+		/// <returns>Rata Die</returns>
+		public static double CalculateRataDie(double julianDate) => Math.Floor(d: julianDate - DoubleRataDieCoefficient);
+
+		/// <summary>
+		/// Calculates the current Mars Sol Date using the current system time in UTC.
+		/// The result is obtained by subtracting the Mars Sol Date coefficient from the current Julian Date
+		/// and dividing by the Earth-Mars rotation ratio.
+		/// </summary>
+		/// <returns>Mars Sol Date for the current UTC time</returns>
+		public static double CalculateMarsSolDate() => (CalculateJulianDate() - DoubleMarsSolDateCoefficient) / DoubleRatioRotationAxisEarthMars;
+
+		/// <summary>
+		/// Calculates the Mars Sol Date for a given date and time.
+		/// The result is obtained by subtracting the Mars Sol Date coefficient from the Julian Date of the specified date
+		/// and dividing by the Earth-Mars rotation ratio.
+		/// </summary>
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Mars Sol Date corresponding to the specified date and time</returns>
+		public static double CalculateMarsSolDate(DateTime date) => (CalculateJulianDate(date: date) - DoubleMarsSolDateCoefficient) / DoubleRatioRotationAxisEarthMars;
+
+		/// <summary>
+		/// Calculates the Mars Sol Date from a given Julian Date.
+		/// </summary>
+		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Mars Sol Date</returns>
-		public static double CalculateMarsSolDate(double julianDate) => (julianDate - doubleMarsSolDateCoefficient) / doubleRatioRotationAxisEarthMars;
+		public static double CalculateMarsSolDate(double julianDate) => (julianDate - DoubleMarsSolDateCoefficient) / DoubleRatioRotationAxisEarthMars;
 
 		/// <summary>
-		/// Calculate the Unix Time
+		/// Calculates the current Unix Time (seconds since 1970-01-01) using the current system time in UTC.
+		/// The result is obtained by subtracting the Unix Time coefficient from the current Julian Date and multiplying by the number of seconds in a day.
 		/// </summary>
-		/// <returns>Unix Time</returns>
-		public static double CalculateUnixTime() => (CalculateJulianDate() - doubleUnixtimeCoefficient) * secondsOfDay;
+		/// <returns>Unix Time for the current UTC time</returns>
+		public static double CalculateUnixTime() => (CalculateJulianDate() - DoubleUnixTimeCoefficient) * SecondsOfDay;
 
 		/// <summary>
-		/// Calculate the Unix Time from the date
+		/// Calculates the Unix Time (seconds since 1970-01-01) for a given date and time.
+		/// The result is obtained by subtracting the Unix Time coefficient from the Julian Date of the specified date and multiplying by the number of seconds in a day.
 		/// </summary>
-		/// <param name="date">date</param>
-		/// <returns>Unix Time</returns>
-		public static double CalculateUnixTime(DateTime date) => (CalculateJulianDate(date: date) - doubleUnixtimeCoefficient) * secondsOfDay;
+		/// <param name="date">The date and time to convert</param>
+		/// <returns>Unix Time corresponding to the specified date and time</returns>
+		public static double CalculateUnixTime(DateTime date) => (CalculateJulianDate(date: date) - DoubleUnixTimeCoefficient) * SecondsOfDay;
 
 		/// <summary>
-		/// Calculate the Unix Time from the Julian Date
+		/// Calculates the Unix Time (seconds since 1970-01-01) from a given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Unix Time</returns>
-		public static double CalculateUnixTime(double julianDate) => (julianDate - doubleUnixtimeCoefficient) * secondsOfDay;
+		public static double CalculateUnixTime(double julianDate) => (julianDate - DoubleUnixTimeCoefficient) * SecondsOfDay;
 
 		#endregion
 
 		#region JD Converters
 
 		/// <summary>
-		/// Convert Julian Date to civil calendar
+		/// Converts a Julian Date to a civil calendar date and time (DateTime).
 		/// </summary>
-		/// <param name="julianDate">Julian Date</param>
-		/// <returns>civil calendar</returns>
+		/// <param name="julianDate">The Julian Date to convert.</param>
+		/// <returns>DateTime representing the corresponding civil calendar date and time.</returns>
 		public static DateTime ConvertJulianDateToCivilCalendar(double julianDate)
 		{
+			// Add 0.5 to the Julian date to align with the start of the civil day
 			double j = julianDate + 0.5;
-			int Z = (int)j;
-			double F = j - Z;
-			int A = Z;
-			if (Z >= 2299161)
+
+			// Separate the integer and fractional parts
+			int z = (int)j;
+			double f = j - z;
+
+			// Gregorian calendar correction
+			int a;
+			if (z < 2299161)
 			{
-				int alpha = (int)((Z - 1867216.25) / 36524.25);
-				A += 1 + alpha - (int)(alpha / 4.0);
+				// Julian calendar
+				a = z;
 			}
-			int B = A + 1524;
-			int C = (int)((B - 122.1) / 365.25);
-			int D = (int)(365.25 * C);
-			int E = (int)((B - D) / 30.6001);
+			else
+			{
+				// Gregorian calendar
+				int alpha = (int)((z - 1867216.25) / 36524.25);
+				a = z + 1 + alpha - (alpha / 4);
+			}
 
-			int day = B - D - (int)(30.6001 * E);
-			int month = (E < 14) ? E - 1 : E - 13;
-			int year = (month > 2) ? C - 4716 : C - 4715;
+			// Calculate intermediate values for year, month, and day
+			int b = a + 1524;
+			int c = (int)((b - 122.1) / 365.25);
+			int d = (int)(365.25 * c);
+			int e = (int)((b - d) / 30.6001);
 
-			double dayFraction = F * 24.0;
-			int hour = (int)dayFraction;
-			double minuteFraction = (dayFraction - hour) * 60.0;
-			int minute = (int)minuteFraction;
-			int second = (int)((minuteFraction - minute) * 60.0);
+			// Calculate day, month, and year
+			int day = b - d - (int)(30.6001 * e);
+			int month = (e < 14) ? e - 1 : e - 13;
+			int year = (month > 2) ? c - 4716 : c - 4715;
 
-			return new DateTime(year, month, day, hour, minute, second);
+			// Efficiently calculate the time part (hour, minute, second) from the fractional day
+			double totalSeconds = f * 86400.0;
+			int hour = (int)(totalSeconds / 3600);
+			int minute = (int)(totalSeconds % 3600 / 60);
+			int second = (int)(totalSeconds % 60);
+
+			// Construct and return the DateTime object
+			return new DateTime(year: year, month: month, day: day, hour: hour, minute: minute, second: second);
 		}
 
-
 		/// <summary>
-		/// Convert the Julian Date to the Modified Julian Date
+		/// Converts a Julian Date to the Modified Julian Date (MJD).
+		/// The result is obtained by subtracting the Modified Julian Date coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Modified Julian Date</returns>
-		public static double ConvertJulianDateToModifiedJulianDate(double julianDate) => julianDate -
-			doubleModifiedJulianDateCoefficient;
+		public static double ConvertJulianDateToModifiedJulianDate(double julianDate) => julianDate - DoubleModifiedJulianDateCoefficient;
 
 		/// <summary>
-		/// Convert the Modified Julian Date to the Julian Date
+		/// Converts a Modified Julian Date (MJD) to the Julian Date.
+		/// The result is obtained by adding the Modified Julian Date coefficient to the given Modified Julian Date.
 		/// </summary>
 		/// <param name="julianModifiedDate">Modified Julian Date</param>
 		/// <returns>Julian Date</returns>
-		public static double ConvertModifiedJulianDateToJulianDate(double julianModifiedDate) => julianModifiedDate +
-			doubleModifiedJulianDateCoefficient;
+		public static double ConvertModifiedJulianDateToJulianDate(double julianModifiedDate) => julianModifiedDate + DoubleModifiedJulianDateCoefficient;
 
 		/// <summary>
-		/// Convert the Julian Date to the Reduced Julian Date
+		/// Converts a Julian Date to the Reduced Julian Date (RJD).
+		/// The result is obtained by subtracting the Reduced Julian Date coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Reduced Julian Date</returns>
-		public static double ConvertJulianDateToReducedJulianDate(double julianDate) => julianDate -
-			doubleReducedJulianDateCoefficient;
+		public static double ConvertJulianDateToReducedJulianDate(double julianDate) => julianDate - DoubleReducedJulianDateCoefficient;
 
 		/// <summary>
-		/// Convert the Julian Date to the Truncated Julian Date
+		/// Converts a Julian Date to the Truncated Julian Date (TJD).
+		/// The result is obtained by subtracting the Truncated Julian Date coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Truncated Julian Date</returns>
-		public static double ConvertJulianDateToTruncatedJulianDate(double julianDate) => julianDate -
-			doubleTruncatedJulianDateCoefficient;
+		public static double ConvertJulianDateToTruncatedJulianDate(double julianDate) => julianDate - DoubleTruncatedJulianDateCoefficient;
 
 		/// <summary>
-		/// Convert the Julian Date to the Dublin Julian Date
+		/// Converts a Julian Date to the Dublin Julian Date (DJD).
+		/// The result is obtained by subtracting the Dublin Julian Date coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Dublin Julian Date</returns>
-		public static double ConvertJulianDateToDublinJulianDate(double julianDate) => julianDate -
-			doubleDublinJulianDateCoefficient;
+		public static double ConvertJulianDateToDublinJulianDate(double julianDate) => julianDate - DoubleDublinJulianDateCoefficient;
 
 		/// <summary>
-		/// Convert the Julian Date the CNES Julian Date
+		/// Converts a Julian Date to the CNES Julian Date.
+		/// The result is obtained by subtracting the CNES Julian Date coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>CNES Julian Date</returns>
-		public static double ConvertJulianDateToCnesJulianDate(double julianDate) => julianDate -
-			doubleCnesJulianDateCoefficient;
+		public static double ConvertJulianDateToCnesJulianDate(double julianDate) => julianDate - DoubleCnesJulianDateCoefficient;
 
 		/// <summary>
-		/// Convert the Julian Date to the CCSDS Julian Date
+		/// Converts a Julian Date to the CCSDS Julian Date.
+		/// The result is obtained by subtracting the CCSDS Julian Date coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>CCSDS Julian Date</returns>
-		public static double ConvertJulianDateToCcsdsJulianDate(double julianDate) => julianDate -
-			doubleCcsdsJulianDateCoefficient;
+		public static double ConvertJulianDateToCcsdsJulianDate(double julianDate) => julianDate - DoubleCcsdsJulianDateCoefficient;
 
 		/// <summary>
-		/// Convert the Julian Date to the LOP Julian Date
+		/// Converts a Julian Date to the LOP Julian Date.
+		/// The result is obtained by subtracting the LOP Julian Date coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>LOP Julian Date</returns>
-		public static double ConvertJulianDateToLopJulianDate(double julianDate) => julianDate -
-			doubleLopJulianDateCoefficient;
+		public static double ConvertJulianDateToLopJulianDate(double julianDate) => julianDate - DoubleLopJulianDateCoefficient;
 
 		/// <summary>
-		/// Convert the Julian Date to the Millennium Julian Date
+		/// Converts a Julian Date to the Millennium Julian Date.
+		/// The result is obtained by subtracting the Millennium Julian Date coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Millennium Julian Date</returns>
-		public static double ConvertJulianDateToMillenniumJulianDate(double julianDate) => julianDate -
-			doubleMillenniumJulianDateCoefficient;
+		public static double ConvertJulianDateToMillenniumJulianDate(double julianDate) => julianDate - DoubleMillenniumJulianDateCoefficient;
 
 		/// <summary>
-		/// Convert the Julian Date to the Chronological Julian Date
+		/// Converts a Julian Date to the Chronological Julian Date.
+		/// The result is calculated using the CalculateChronologicalJulianDate method.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Chronological Julian Date</returns>
-		public static double ConvertJulianDateToChronologicalJulianDate(double julianDate) => CalculateChronologicalJulianDate(
-			julianDate: julianDate);
+		public static double ConvertJulianDateToChronologicalJulianDate(double julianDate) => CalculateChronologicalJulianDate(julianDate: julianDate);
 
 		/// <summary>
-		/// Convert the Julian Date to the Chronological Modified Julian Date
+		/// Converts a Julian Date to the Chronological Modified Julian Date.
+		/// The result is calculated using the CalculateChronologicalModifiedJulianDate method.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Chronological Modified Julian Date</returns>
-		public static double ConvertJulianDateToChronologicalModifiedJulianDate(double julianDate) => CalculateChronologicalModifiedJulianDate(
-			julianDate: julianDate);
+		public static double ConvertJulianDateToChronologicalModifiedJulianDate(double julianDate) => CalculateChronologicalModifiedJulianDate(julianDate: julianDate);
 
 		/// <summary>
-		/// Convert the Julian Date to the Lilian Date
+		/// Converts a Julian Date to the Lilian Date.
+		/// The result is obtained by subtracting the Lilian Date coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Lilian Date</returns>
-		public static double ConvertJulianDateToLilianDate(double julianDate) => julianDate -
-			doubleLilianDateCoefficient;
+		public static double ConvertJulianDateToLilianDate(double julianDate) => julianDate - DoubleLilianDateCoefficient;
 
 		/// <summary>
-		/// Convert the Julian Date to the Rata Die
+		/// Converts a Julian Date to the Rata Die.
+		/// The result is obtained by subtracting the Rata Die coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Rata Die</returns>
-		public static double ConvertJulianDateToRataDie(double julianDate) => julianDate - doubleRataDieCoefficient;
+		public static double ConvertJulianDateToRataDie(double julianDate) => julianDate - DoubleRataDieCoefficient;
 
 		/// <summary>
-		/// Convert the Julian Date to the Mars Sol Date
+		/// Converts a Julian Date to the Mars Sol Date.
+		/// The result is obtained by subtracting the Mars Sol Date coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Mars Sol Date</returns>
-		public static double ConvertJulianDateToMarsSolDate(double julianDate) => julianDate -
-			doubleMarsSolDateCoefficient;
+		public static double ConvertJulianDateToMarsSolDate(double julianDate) => julianDate - DoubleMarsSolDateCoefficient;
 
 		/// <summary>
-		/// Convert the Julian Date to the Unix Time
+		/// Converts a Julian Date to Unix Time (days since 1970-01-01).
+		/// The result is obtained by subtracting the Unix Time coefficient from the given Julian Date.
 		/// </summary>
 		/// <param name="julianDate">Julian Date</param>
 		/// <returns>Unix Time</returns>
-		public static double ConvertJulianDateToUnixtime(double julianDate) => julianDate - doubleUnixtimeCoefficient;
+		public static double ConvertJulianDateToUnixTime(double julianDate) => julianDate - DoubleUnixTimeCoefficient;
+
 		#endregion
 	}
 }
